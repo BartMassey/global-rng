@@ -4,8 +4,9 @@ version = "0.1.0"
 authors = ["Bart Massey <bart.massey@gmail.com>"]
 edition = "2018"
 
-[dependencies]
-rand = "0.8"
+[dependencies.rand]
+version = "0.8"
+features = ["small_rng"]
 
 [dependencies.ugly_global]
 version = "0.2"

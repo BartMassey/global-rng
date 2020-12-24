@@ -1,4 +1,5 @@
 use rand::*;
+use rand::rngs::SmallRng;
 use ugly_global::*;
 
 global_vars! {
@@ -6,12 +7,12 @@ global_vars! {
 }
 
 struct R {
-    gen: Box<dyn RngCore>,
+    gen: Box<dyn RngCore + Send + Sync>,
 }
 
 impl R {
     fn new() -> R {
-        R { gen: Box::new(thread_rng()) }
+        R { gen: Box::new(SmallRng::from_entropy()) }
     }
 }
 
@@ -57,15 +58,15 @@ fn demo() {
 fn main() {
     init!{ RNG = R::new() };
     demo();
-    fetch!{ r = RNG };
-    r.gen = Box::new(BadR::new());
+    { 
+        fetch!{ r = RNG };
+        r.gen = Box::new(BadR::new());
+    }
     demo();
-    /*
-    let r = std::sync::Mutex::new(r);
     let tid = std::thread::spawn(move || {
-        let v = r.lock().unwrap().gen.gen_range(1..=6);
+        fetch!{ r = RNG };
+        let v = r.gen.gen_range(1..=6);
         println!("{}", v);
     });
     tid.join().unwrap();
-    */
 }

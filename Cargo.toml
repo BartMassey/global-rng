@@ -9,5 +9,5 @@ version = "0.8"
 features = ["small_rng"]
 
 [dependencies.ugly_global]
-version = "0.2"
+version = "0.3.1"
 git = "http://github.com/BartMassey/ugly-global"
